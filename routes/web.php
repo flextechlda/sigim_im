@@ -1,6 +1,10 @@
 <?php
 
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\EnrollmentController;
+use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\PrintController;
+use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WebController;
 use App\Models\MovementStudent;
@@ -48,6 +52,32 @@ Route::post('/logout', function(){
 
 #Rotas para gestores do Registo academico
 Route::get('/manager/home/{student_code?}', [WebController::class, 'homeManager'])->name('home-manager')->middleware('auth:manager');
+Route::prefix('admin')->middleware('auth:admin')->group(function () {
+    Route::get('/home', [WebController::class, 'homeAdmin'])->name('home-admin');
+    Route::get('/manager', [WebController::class, 'managerDashboard'])->name('manager-dashboard');
+    Route::get('/student', [WebController::class, 'studentDashboard'])->name('student-dashboard');
+    Route::prefix('/students')->group(function(){
+        Route::get('/list',[StudentController::class,'index'])->name('student-list');
+        Route::get('/add',[StudentController::class,'store'])->name('student-add');
+        Route::get('/edit/{studente_code?}',[StudentController::class,'edit'])->name('student-edit');
+    });
+    Route::prefix('/managers')->group(function(){
+        Route::get('/list',[ManagerController::class,'index'])->name('manager-list');
+        Route::get('/add',[ManagerController::class,'store'])->name('manager-add');
+        Route::get('/edit/{studente_code?}',[ManagerController::class,'edit'])->name('manager-edit');
+    });
+    Route::prefix('/admins')->group(function(){
+        Route::get('/list',[AdminController::class,'index'])->name('admin-list');
+        Route::get('/add',[AdminController::class,'store'])->name('admin-add');
+        Route::get('/edit/{studente_code?}',[AdminController::class,'edit'])->name('admin-edit');
+    });
+    Route::prefix('/enrollments')->group(function(){
+        Route::get('/list',[EnrollmentController::class,'index'])->name('enrollment-list');
+        Route::get('/add',[EnrollmentController::class,'store'])->name('enrollment-add');
+        Route::get('/edit/{studente_code?}',[EnrollmentController::class,'edit'])->name('enrollment-edit');
+    });
+});
+
 Route::get('/manager/perfil', [WebController::class, 'perfilManager'])->name('perfil-manager')->middleware('auth:manager');
 Route::post('/manager/password/update', [WebController::class, 'passwordUpdateManager'])->middleware(['auth:manager']);
 //Visualizacao do perfil do estudante inscrito

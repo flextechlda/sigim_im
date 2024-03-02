@@ -12,6 +12,8 @@ class ManagerController extends Controller
      */
     public function index()
     {
+        $managers = Manager::paginate();
+        return view('web.admin.manager.list',compact('managers'));
         //
     }
 

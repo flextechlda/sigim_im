@@ -12,7 +12,10 @@ class StudentController extends Controller
      */
     public function index()
     {
-        //
+
+            $students = Student::with('studentEnrollment')->paginate(50);
+
+        return view('web.admin.student.list',compact('students'));
     }
 
     /**
@@ -28,7 +31,7 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return view('web.admin.student.add');
     }
 
     /**
@@ -44,7 +47,7 @@ class StudentController extends Controller
      */
     public function edit(Student $student)
     {
-        //
+        return view('web.admin.student.edit');
     }
 
     /**

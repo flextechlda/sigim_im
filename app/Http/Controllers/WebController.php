@@ -62,6 +62,11 @@ class WebController extends Controller
 
                 $request->session()->regenerate();
                 return redirect()->route('home-manager');
+            }else if (Auth::guard('admin')->attempt($credential)) {
+
+                // dd("Nkmk");
+                $request->session()->regenerate();
+                return redirect()->route('home-admin');
             }
 
             return back()->withErrors([
@@ -107,7 +112,7 @@ class WebController extends Controller
     				'email' => $request->email,
     				'password' => Hash::make($request->password),
     			]);
-               
+
 
     			$email = $request->email;
 
@@ -432,6 +437,21 @@ class WebController extends Controller
         }
 
         return view('web.manager.home', compact('students'));
+    }
+    public function homeAdmin()
+    {
+
+        return view('web.admin.dashboard'/* , compact('students')*/);
+    }
+    public function managerDashboard()
+    {
+
+        return view('web.admin.manager'/* , compact('students')*/);
+    }
+    public function studentDashboard()
+    {
+
+        return view('web.admin.student'/* , compact('students')*/);
     }
 
     public function perfilManager()
