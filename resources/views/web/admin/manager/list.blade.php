@@ -5,10 +5,10 @@
 		<div class="row">
 			<div class="col-sm-12">
 				<div class="page-sub-header">
-					<h3 class="page-title">Students</h3>
+					<h3 class="page-title">Managers</h3>
 					<ul class="breadcrumb">
-						<li class="breadcrumb-item"><a href="students.html">Student</a></li>
-						<li class="breadcrumb-item active">All Students</li>
+						<li class="breadcrumb-item"><a href="students.html">Manager</a></li>
+						<li class="breadcrumb-item active">All Managers</li>
 					</ul>
 				</div>
 			</div>

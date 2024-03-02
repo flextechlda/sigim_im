@@ -69,14 +69,14 @@
 
 									<th>Code</th>
 									<th>Name</th>
+									<th>Date of Enrolment</th>
 									<th>Local of study</th>
-									<th>Mobile Number</th>
-									<th>E-mail</th>
+									<th>Status</th>
 									<th class="text-end">Action</th>
 								</tr>
 							</thead>
 							<tbody>
-								@foreach ($students as $student)
+								@foreach ($enrollments as $student)
 									<tr>
 
 										<td>
@@ -84,16 +84,14 @@
 										</td>
 										<td>
 											<h2 class="table-avatar">
-												<a href="student-details.html" class="avatar avatar-sm me-2"><img
-														class="avatar-img rounded-circle"
-														src="{{ asset('assets/img/profiles/avatar-01.jpg') }}" alt="User Image"></a>
+
 												<a
 													href="student-details.html">{{ $student->first_name . ' ' . $student->last_name }}</a>
 											</h2>
 										</td>
+                                        <td>{{ $student->studentEnrollment->created_at }}</td>
 										<td>{{ $student->studentEnrollment->extension->city }}</td>
-										<td>{{ $student->phone }}</td>
-										<td>{{ $student->email }}</td>
+										<td>{{ $student->studentEnrollment-> }}</td>
 										<td class="text-end">
 											<div class="actions">
 												<a href="javascript:;" class="btn btn-sm bg-success-light me-2">

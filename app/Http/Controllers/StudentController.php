@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Student;
+use App\Models\Course;
+use App\Models\Gender;
 use Illuminate\Http\Request;
 
 class StudentController extends Controller
@@ -45,9 +47,19 @@ class StudentController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Student $student)
+    public function edit($student_code = null)
     {
-        return view('web.admin.student.edit');
+         if (isset($student_code) && !empty($student_code)) {
+            $student = Student::with('studentEnrollment')->where('code', '=', $student_code)->get();
+            $student =  $student[0];
+            $courses = Course::paginate();
+            $genders = Gender::paginate();
+
+            return view('web.admin.student.edit',compact('student','courses','genders'));
+        }else{
+            return view('web.admin.student.list');
+
+        }
     }
 
     /**

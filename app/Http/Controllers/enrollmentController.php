@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\StudentEnrollment;
+use App\Models\Student;
 use Illuminate\Http\Request;
 
 class EnrollmentController extends Controller
@@ -13,6 +14,9 @@ class EnrollmentController extends Controller
     public function index()
     {
         //
+        $enrollments = Student::with('studentEnrollment')->paginate(50);
+      return view('web.admin.Enrolment.list', compact('enrollments'));
+
     }
 
     /**

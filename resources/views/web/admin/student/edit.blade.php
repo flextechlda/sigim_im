@@ -22,104 +22,73 @@
 					<form>
 						<div class="row">
 							<div class="col-12">
-								<h5 class="form-title student-info">Student Information <span><a href="javascript:;"><i
-												class="feather-more-vertical"></i></a></span></h5>
+								<h5 class="form-title student-info">Student Information <span><a
+											href="javascript:;"><i class="feather-more-vertical"></i></a></span></h5>
 							</div>
 							<div class="col-12 col-sm-4">
 								<div class="form-group local-forms">
 									<label>First Name <span class="login-danger">*</span></label>
-									<input class="form-control" type="text" value="John Doe">
+									<input class="form-control" type="text" value="{{ $student->first_name }}">
 								</div>
 							</div>
 							<div class="col-12 col-sm-4">
 								<div class="form-group local-forms">
 									<label>Last Name <span class="login-danger">*</span></label>
-									<input class="form-control" type="text" value="Stephen">
+									<input class="form-control" type="text" value="{{ $student->last_name }}">
 								</div>
 							</div>
 							<div class="col-12 col-sm-4">
 								<div class="form-group local-forms">
 									<label>Gender <span class="login-danger">*</span></label>
 									<select class="form-control select">
-										<option>Select Gender</option>
-										<option>Female</option>
-										<option>Male</option>
-										<option>Others</option>
+
+										@foreach ($genders as $index => $gender)
+											<option {{ $index + 1 == $student->gender_id ? 'selected' : '' }}>
+												{{ $gender->label }}</option>
+										@endforeach
 									</select>
 								</div>
 							</div>
 							<div class="col-12 col-sm-4">
 								<div class="form-group local-forms calendar-icon">
 									<label>Date Of Birth <span class="login-danger">*</span></label>
-									<input class="form-control datetimepicker" type="text" placeholder="DD-MM-YYYY">
+									<input class="form-control datetimepicker" type="text" placeholder="DD-MM-YYYY"
+										value="{{ $student->birth_date }}">
 								</div>
 							</div>
 							<div class="col-12 col-sm-4">
 								<div class="form-group local-forms">
-									<label>Roll </label>
-									<input class="form-control" type="text" value="12450687">
+									<label>Faculty </label>
+									<input class="form-control" type="text"
+										value="{{ $student->studentEnrollment->faculty->label }}">
 								</div>
 							</div>
-							<div class="col-12 col-sm-4">
-								<div class="form-group local-forms">
-									<label>Blood Group <span class="login-danger">*</span></label>
-									<select class="form-control select">
-										<option>Please Select Group </option>
-										<option>B+</option>
-										<option>A+</option>
-										<option>O+</option>
-									</select>
-								</div>
-							</div>
-							<div class="col-12 col-sm-4">
-								<div class="form-group local-forms">
-									<label>Religion <span class="login-danger">*</span></label>
-									<select class="form-control select">
-										<option>Please Select Religion </option>
-										<option>Hindu</option>
-										<option>Christian</option>
-										<option>Others</option>
-									</select>
-								</div>
-							</div>
+
 							<div class="col-12 col-sm-4">
 								<div class="form-group local-forms">
 									<label>E-Mail <span class="login-danger">*</span></label>
-									<input class="form-control" type="text" value="example@gmail.com">
+									<input class="form-control" type="text" value="{{ $student->email }}">
 								</div>
 							</div>
 							<div class="col-12 col-sm-4">
 								<div class="form-group local-forms">
-									<label>Class <span class="login-danger">*</span></label>
+									<label>Course <span class="login-danger">*</span></label>
+
 									<select class="form-control select">
-										<option>Please Select Class </option>
-										<option>12</option>
-										<option>11</option>
-										<option>10</option>
+										@foreach ($courses as $index => $course)
+											<option
+												{{ $index + 1 == $student->studentEnrollment->course_id ? 'selected' : '' }}>
+												{{ $course->label }}</option>
+										@endforeach
 									</select>
+
 								</div>
 							</div>
-							<div class="col-12 col-sm-4">
-								<div class="form-group local-forms">
-									<label>Section <span class="login-danger">*</span></label>
-									<select class="form-control select">
-										<option>Please Select Section </option>
-										<option>B</option>
-										<option>A</option>
-										<option>C</option>
-									</select>
-								</div>
-							</div>
-							<div class="col-12 col-sm-4">
-								<div class="form-group local-forms">
-									<label>Admission ID </label>
-									<input class="form-control" type="text" value="1426539">
-								</div>
-							</div>
+
 							<div class="col-12 col-sm-4">
 								<div class="form-group local-forms">
 									<label>Phone </label>
-									<input class="form-control" type="text" value="+1 888 888 8888">
+									<input class="form-control" type="text" value="+258 {{ $student->phone }}">
 								</div>
 							</div>
 							<div class="col-12 col-sm-4">
