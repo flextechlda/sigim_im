@@ -5,10 +5,10 @@
 		<div class="row">
 			<div class="col-sm-12">
 				<div class="page-sub-header">
-					<h3 class="page-title">Students</h3>
+					<h3 class="page-title">Enrollments</h3>
 					<ul class="breadcrumb">
-						<li class="breadcrumb-item"><a href="students.html">Student</a></li>
-						<li class="breadcrumb-item active">All Students</li>
+						<li class="breadcrumb-item"><a href="students.html">Enrollment</a></li>
+						<li class="breadcrumb-item active">All Enrollments</li>
 					</ul>
 				</div>
 			</div>
@@ -89,9 +89,14 @@
 													href="student-details.html">{{ $student->first_name . ' ' . $student->last_name }}</a>
 											</h2>
 										</td>
-                                        <td>{{ $student->studentEnrollment->created_at }}</td>
+										<td>{{ $student->studentEnrollment->created_at }}</td>
 										<td>{{ $student->studentEnrollment->extension->city }}</td>
-										<td>{{ $student->studentEnrollment-> }}</td>
+										<td><span
+												style="padding: 3px 8px; {{ $student->registration_status == 2 ? 'background-color: #0080004a; color: #009000' : ($student->registration_status == 1 ? 'background-color: #ffa5004a; color: #ffa500' : 'background-color: #ff08004a; color: #ff0800') }}">
+												{{ $student->registration_status == 2 ? 'Aprovada' : ($student->registration_status == 1 ? 'Pendente' : 'Cancelada') }}
+											</span>
+
+										</td>
 										<td class="text-end">
 											<div class="actions">
 												<a href="javascript:;" class="btn btn-sm bg-success-light me-2">
@@ -100,7 +105,7 @@
 												<a href="{{ route('student-edit', ['studente_code' => $student->code]) }}"
 													class="btn btn-sm bg-danger-light">
 
-													<i class="feather-edit"></i>
+													<i class="feather-printer"></i>
 												</a>
 											</div>
 										</td>

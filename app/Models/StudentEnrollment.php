@@ -8,16 +8,21 @@ use Illuminate\Database\Eloquent\Model;
 class StudentEnrollment extends Model
 {
     use HasFactory;
-
     protected $fillable = [
     	'academic_level_id',
     	"faculty_id",
         "course_id",
         "extension_id",
         'sewing_line_id',
-        'student_id'
+        'student_id',
+        'semestre',
+        'enrollment_status',
     ];
 
+    public function student()
+    {
+        return $this->belongsTo(Student::class);
+    }
     public function faculty()
     {
         return $this->belongsTo(Faculty::class);

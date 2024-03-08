@@ -14,4 +14,5 @@ class Extension extends Model
     	//return $this->belongsToMany(Faculty::class, 'extension_faculties');
     	return $this->hasMany(Faculty::class);
     }
+
 }

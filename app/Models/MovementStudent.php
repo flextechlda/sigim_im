@@ -17,6 +17,9 @@ class MovementStudent extends Model
         'total_amount',
         'status',
         'student_id',
+        'month',
+        'year',
+        'semestre',
         'manager_id'
     ];
 

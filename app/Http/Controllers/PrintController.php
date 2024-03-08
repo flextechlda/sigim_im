@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\MovementStudent;
+use App\Models\StudentEnrollment;
 use App\Models\Student;
 use Dompdf\Dompdf;
 use phputil\extenso\Extenso;
@@ -10,9 +11,40 @@ use Illuminate\Http\Request;
 
 class PrintController extends Controller
 {
-    //Impressao de Comprovativo de pagamento
+
+
     public function receiptPayment($number)
     {
+        function obterNomeMes($semestre) {
+    switch ($semestre) {
+        case 1:
+            return 'Janeiro';
+        case 2:
+            return 'Fevereiro';
+        case 3:
+            return 'Março';
+        case 4:
+            return 'Abril';
+        case 5:
+            return 'Maio';
+        case 6:
+            return 'Junho';
+        case 7:
+            return 'Julho';
+        case 8:
+            return 'Agosto';
+        case 9:
+            return 'Setembro';
+        case 10:
+            return 'Outubro';
+        case 11:
+            return 'Novembro';
+        case 12:
+            return 'Dezembro';
+        default:
+            return 'Mês Inválido';
+    }
+}
         $movement = MovementStudent::with(['payment', 'items', 'student'])->where('code', '=', $number)->first();
 
         $payment = $movement->payment;
@@ -29,13 +61,18 @@ class PrintController extends Controller
 
         $manager = auth()->user()->first_name.' '. auth()->user()->last_name;
         $date = date('Y-m-d H:i:s');
-
+        $mes= obterNomeMes($movement->month);
         $str_items = '';
         $order = 0;
         foreach ($items as $item) {
+    $amount = number_format($item->amount, 2, '.', ',');
+
+    // Verifica se o item não é a taxa de matrícula
+    if($movement->semestre>1){
+
+        if ($item->description !== 'Taxa de Matrícula (Nacional)' && $item->description !== 'Taxa de Matrícula (Estrangeiro)') {
             $order = $order + 1;
-            $amount = number_format($item->amount, 2, '.', ',');
-            $str_items = $str_items. "
+            $str_items = $str_items . "
                 <tr>
                     <td>$order</td>
                     <td>$item->description</td>
@@ -45,6 +82,21 @@ class PrintController extends Controller
                 </tr>
             ";
         }
+    }else{
+        $order = $order + 1;
+         $str_items = $str_items . "
+                <tr>
+                    <td>$order</td>
+                    <td>$item->description</td>
+                    <td>
+                        $amount
+                    </td>
+                </tr>
+            ";
+
+    }
+}
+
 
         $str = <<<TEXT
             <!DOCTYPE html>
@@ -133,7 +185,7 @@ class PrintController extends Controller
                                 <span style="font-size: 10pt;">Estudante: </span>
                                 <span style="font-size: 10pt; border: 1px solid #000000; font-weight: 700; padding: 1px;">$student->first_name $student->last_name</span>
                                 <span style="font-size: 10pt; margin-left: 20px;">Codigo de estudante: <span style="font-size: 8pt; font-weight: 600;">$student->code</span></span><br>
-                                <span style="font-size: 10pt; line-height: 25px;">Curso: <span style="font-size: 8pt; font-weight: 600;">$course</span></span>
+                                <span style="font-size: 10pt; line-height: 25px;">Curso: <span style="font-size: 8pt; font-weight: 600;">$course <span style="font-size: 8pt; font-weight: normal; margin-left:280px">Semestre: <span style="font-size: 8pt; font-weight: bolder;">$movement->semestre</span>º</span></span>
                             </div>
                             <table style="width: 100%;">
                                 <tr>
@@ -163,6 +215,7 @@ class PrintController extends Controller
                         </div>
 
                         <div style="width: 100%; margin-top: 15px;">
+                        <span style="font-size: 10pt; font-weight: 800;">Mês de $mes</span>
                             <table style="width: 100%;">
                                 <tr>
                                     <th>Ordem</th>
@@ -207,7 +260,7 @@ class PrintController extends Controller
                                 <span style="font-size: 10pt;">Estudante: </span>
                                 <span style="font-size: 10pt; border: 1px solid #000000; font-weight: 700; padding: 1px;">$student->first_name $student->last_name</span>
                                 <span style="font-size: 10pt; margin-left: 20px;">Codigo de estudante: <span style="font-size: 8pt; font-weight: 600;">$student->code</span></span><br>
-                                <span style="font-size: 10pt; line-height: 25px;">Curso: <span style="font-size: 8pt; font-weight: 600;">$course</span></span>
+                                <span style="font-size: 10pt; line-height: 25px;">Curso: <span style="font-size: 8pt; font-weight: 600;">$course</span><span style="font-size: 8pt; font-weight: normal; margin-left:280px">Semestre: <span style="font-size: 8pt; font-weight: bolder;">$movement->semestre</span>º <span></span>
                             </div>
                             <table style="width: 100%;">
                                 <tr>
@@ -237,6 +290,7 @@ class PrintController extends Controller
                         </div>
 
                         <div style="width: 100%; margin-top: 15px;">
+                        <span style="font-size: 10pt; font-weight: 800;">Mês de $mes</span>
                             <table style="width: 100%;">
                                 <tr>
                                     <th>Ordem</th>
@@ -276,13 +330,14 @@ class PrintController extends Controller
     //A funcao que executa a impressao dos recibos
     public function print($code){
         $student_data = Student::with(['studentEnrollment', 'manager'])->where('code', '=', $code)->first();
+        $enrollment = StudentEnrollment::with(['student','faculty'])->where('student_id','=',$student_data->id)->latest('semestre')->first();
 
         if ($student_data) {
             $pdf = new Dompdf(["enable_remote" => true]);
-            if($student_data->registration_status == 2){
-                $printer = $this->printerApproved($student_data);
-            }elseif($student_data->registration_status == 1){
-                $printer = $this->printerPending($student_data);
+            if($enrollment->enrollment_status == 2){
+                $printer = $this->printerApproved($enrollment);
+            }elseif($enrollment->enrollment_status == 1){
+                $printer = $this->printerPending($enrollment);
             }
             ob_start();
                 //echo printerPending($student_data);
@@ -297,26 +352,33 @@ class PrintController extends Controller
     }
 
     //Funcoes para imprimir recibos de inscricao
-    private function printerPending($student){
+    private function printerPending($enrollment){
 
-        if ($student->registration_status == 1) {
+        if ($enrollment->enrollment_status == 1) {
             $status = "Pendente";
-        }elseif ($student->registration_status == 2) {
+        }elseif ($enrollment->enrollment_status== 2) {
             $status = "Aprovada";
-        }elseif($student->registration_status == 0){
+        }elseif($enrollment->enrollment_status== 0){
             $status = "Cancelada";
+        }
+        $taxaMatricula = "Taxa de matrícula;";
+        $primeiraPropinaMensal = "e a primeira propina mensal";
+        if($enrollment->semestre >1){
+            $taxaMatricula = "";
+            $primeiraPropinaMensal="";
         }
 
         $data = date('d-m-Y H:i:s');
-        $faculty = $student->studentEnrollment->faculty->label;
-        $course = $student->studentEnrollment->course->label;
-        $sewing = $student->studentEnrollment->sewingLine->label;
+        $faculty = $enrollment->faculty->label;
+        $course = $enrollment->course->label;
+        $sewing = $enrollment->sewingLine->label;
+        $student = $enrollment->student;
 
         $str = <<<TEXT
             <!DOCTYPE html>
             <html>
                 <head>
-                    <title>Comprovativo de Preinscicao</title>
+                    <title>Comprovativo de Preinscição</title>
                     <style type="text/css">
                         *{
                             margin: 0;
@@ -386,7 +448,9 @@ class PrintController extends Controller
                     </div>
                     <div class="recepient-body">
                         <div style="width: 100%; margin-top: 10px;">
-                            <h4 style="font-weight: 700 !important; margin-bottom: 5px;">Informação Pessoal</h4>
+                            <h4 style="font-weight: 700 !important; margin-bottom: 5px;">Informação Pessoal
+                            <span style="margin-left:300px; font-size:12px ;font-weight: 700 !important"> Pre-inscrição para o <span style="font-size:12px;font-weight: 700 !important">$enrollment->semestre</span>º semestre</span>
+                            </h4>
                             <table style="width: 100%;">
                                 <tr>
                                     <th>Numero de inscrição</th>
@@ -404,7 +468,7 @@ class PrintController extends Controller
                                         $student->first_name $student->last_name
                                     </td>
                                     <td>
-                                        $student->created_at
+                                        $enrollment->created_at
                                     </td>
                                     <td>
                                         $status
@@ -432,7 +496,7 @@ class PrintController extends Controller
                             <div style="margin-top: 15px;">
                                 <p><span style="font-weight: 500;">Nota:</span> Para que a sua inscrição seja aprovada, siga os sequintes passos: </p>
                                 <ul style="margin-left: 40px; padding: 5px;">
-                                    <li>Faça o pagamento da matrícula e das taxas (taxa de matricula; Inscrição semestral por disciplina / módulo; Taxas de serviços semestrais e a primeira propina mensal), através de um depósito Bancário no  Millenium BIM, na conta numero: 475827778 - NIB 000100000047582777857 - Universidade Rovuma;</li><br>
+                                    <li>Faça o pagamento da matrícula e das taxas ($taxaMatricula Inscrição semestral por disciplina / módulo; Taxas de serviços semestrais $primeiraPropinaMensal), através de um depósito Bancário no  Millenium BIM, na conta numero: 475827778 - NIB 000100000047582777857 - Universidade Rovuma;</li><br>
                                     <li>Após o depósito, dirigir-se à Direcção do Registo Académico em Nampula ou aos Departamentos de Registo Académico nas Extensões com o talão de depósito, a ficha impressa de pré-inscrição, duas fotos tipo passe e os documentos originais anexados no processo de pré-inscrição.</li>
                                 </ul>
                             </div>
@@ -448,21 +512,22 @@ class PrintController extends Controller
         return $str;
     }
 
-    private function printerApproved($student){
+    private function printerApproved($enrollment){
 
-        if ($student->registration_status == 1) {
+        if ($enrollment->enrollment_status == 1) {
             $status = "Pendente";
-        }elseif ($student->registration_status == 2) {
+        }elseif ($enrollment->enrollment_status == 2) {
             $status = "Aprovada";
-        }elseif($student->registration_status == 0){
+        }elseif($enrollment->enrollment_status == 0){
             $status = "Cancelada";
         }
 
         $data = date('d-m-Y H:i:s');
-        $faculty = $student->studentEnrollment->faculty->label;
-        $course = $student->studentEnrollment->course->label;
-        $sewing = $student->studentEnrollment->sewingLine->label;
-        $manager = $student->manager;
+        $faculty = $enrollment->faculty->label;
+        $course = $enrollment->course->label;
+        $sewing = $enrollment->sewingLine->label;
+        $manager = $enrollment->student->manager;
+        $student = $enrollment->student;
 
         $str = <<<TEXT
             <!DOCTYPE html>
@@ -538,7 +603,9 @@ class PrintController extends Controller
                     </div>
                     <div class="recepient-body">
                         <div style="width: 100%; margin-top: 10px;">
-                            <h4 style="font-weight: 700 !important; margin-bottom: 5px;">Informação Pessoal</h4>
+                            <h4 style="font-weight: 700 !important; margin-bottom: 5px;">Informação Pessoal
+                            <span style="margin-left:300px; font-size:12px ;font-weight: 700 !important"> Inscrição para o <span style="font-size:12px;font-weight: 700 !important">$enrollment->semestre</span>º semestre</span>
+                            </h4>
                             <table style="width: 100%;">
                                 <tr>
                                     <th>Numero de inscrição</th>
@@ -556,7 +623,7 @@ class PrintController extends Controller
                                         $student->first_name $student->last_name
                                     </td>
                                     <td>
-                                        $student->created_at
+                                        $enrollment->updated_at
                                     </td>
                                     <td>
                                         $status

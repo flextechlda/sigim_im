@@ -29,6 +29,7 @@ use App\Models\StudentDocument;
 use App\Models\StudentProfessionalCareer;
 use App\Models\StudentScholarship;
 use App\Models\StudentEnrollment;
+use App\Models\EnrollmentPeriod;
 use App\Models\StudentAddress;
 use App\Models\PreviousSkill;
 use App\Models\SewingLine;
@@ -63,8 +64,6 @@ class WebController extends Controller
                 $request->session()->regenerate();
                 return redirect()->route('home-manager');
             }else if (Auth::guard('admin')->attempt($credential)) {
-
-                // dd("Nkmk");
                 $request->session()->regenerate();
                 return redirect()->route('home-admin');
             }
@@ -360,7 +359,12 @@ class WebController extends Controller
     //Home de inscricao completa
     public function home(){
         $student = Student::with('studentEnrollment')->where('user_id', '=', auth()->user()->id)->first();
-        return view('web.student.home', compact('student'));
+        $lastEnrollmentPeriod=EnrollmentPeriod::latest('end')->first();
+        $lastEnrollment = StudentEnrollment::where('student_id','=',$student->studentEnrollment->student_id)->latest()->first();
+        $movements = MovementStudent::where('student_id','=',$student->studentEnrollment->student_id,'and','semestre','=',$lastEnrollment->semestre)->latest()->get();
+        // dd($movements->count());
+        $enrollments = StudentEnrollment::where('student_id', '=', $student->studentEnrollment->student_id)->get();
+        return view('web.student.home', compact('student','enrollments','lastEnrollment','lastEnrollmentPeriod','movements'));
     }
 
     //Exibir perfil
@@ -377,7 +381,7 @@ class WebController extends Controller
             $check_password =  Hash::check($request->password, auth()->user()->password);
 
             if ($check_password):
-                $user = $user->find(auth()->user()->id);
+                $user = $user->find(auth()->user()->id);    
                 try{
                     $user->update([
                         'password' => Hash::make($request->new_password)
@@ -431,17 +435,30 @@ class WebController extends Controller
     public function homeManager($student_code = null)
     {
         if (isset($_GET['student_code']) && !empty($_GET['student_code'])) {
-            $students = Student::with('studentEnrollment')->where('code', '=', $_GET['student_code'])->where('extension_id', '=', auth()->user()->extension_id)->paginate(11);
+            $students = Student::with('studentEnrollment')->where('code', '=', $_GET['student_code'])->where('extension_id', '=', auth()->user()->extension_id)->paginate();
+            // dd($students);
         }else{
-            $students = Student::with('studentEnrollment')->where('extension_id', '=', auth()->user()->extension_id)->paginate(11);
+            $studentEnrollment = StudentEnrollment::with(['student'])->where('extension_id', '=', auth()->user()->extension_id)->latest()->paginate(10);
         }
+        //  dd($studentEnrollment);
 
-        return view('web.manager.home', compact('students'));
+        return view('web.manager.home', compact('studentEnrollment'));
     }
     public function homeAdmin()
     {
+        $students = Student::all();
+        $managers  = Manager::all();
+    //     $studentsByYear = Student::select(DB::raw('YEAR(updated_at) as ano'), 'gender_id', DB::raw('count(*) as total'))
+    // ->groupBy('ano', 'gender_id')
+    // ->get();
 
-        return view('web.admin.dashboard'/* , compact('students')*/);
+
+$studentsByYear = Student::select(DB::raw('YEAR(updated_at) as ano'), 'gender_id', DB::raw('count(*) as total'))
+    ->groupBy('ano', 'gender_id')
+    ->get();
+
+
+        return view('web.admin.dashboard', compact('students','managers','studentsByYear'));
     }
     public function managerDashboard()
     {
@@ -499,7 +516,8 @@ class WebController extends Controller
         $student = Student::with(['studentEnrollment', 'movements'])->where('code', '=', $code)->first();
         $services = Service::get();
         $form_payments = FormPayment::get();
-        return view('web.manager.student', compact(['student', 'services', 'form_payments']));
+        $lastEnrollment  = StudentEnrollment::where('student_id','=',$student->id)->latest()->first();
+        return view('web.manager.student', compact(['student', 'services', 'form_payments','lastEnrollment']));
     }
 
 
@@ -522,6 +540,9 @@ class WebController extends Controller
                 'date_receipt' => $request->date_receipt,
                 'total_amount' => $total,
                 'student_id' => $request->student_id,
+                'month' => $request->month,
+                'year' => $request->year,
+                'semestre' => $request->semestre,
                 'status' => '2',
                 'manager_id' => auth()->user()->id,
             ]);
@@ -543,12 +564,12 @@ class WebController extends Controller
     }
 
     //Aprovando o estudante
-    public function studentAprovated(Request $request, Student $student)
+    public function studentAprovated(Request $request, StudentEnrollment $enrollment)
     {
        try {
-            $student->find($request->student_id)->update([
-                'registration_status' => '2',
-                'manager_response_id' => auth()->user()->id
+
+            $enrollment->find($request->enrollment_id)->update([
+                'enrollment_status' => '2'
             ]);
             return response()->json([
                 'updated' => true

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\StudentEnrollment;
 use App\Models\Student;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class EnrollmentController extends Controller
@@ -33,6 +34,31 @@ class EnrollmentController extends Controller
     public function store(Request $request)
     {
         //
+        $student = Student::where('user_id', '=', auth()->user()->id)->first();
+        $studentId=$student->id;
+
+        $enrollment = StudentEnrollment::where('student_id', '=', $studentId)->first();
+
+        $lastEnrollment = StudentEnrollment::where('student_id', '=', $studentId)->latest()->first();
+        $studentFacultID = $enrollment->faculty_id;
+        $studentCourseID = $enrollment->course_id;
+        $studentSewingLineID = $enrollment->sewing_line_id;
+        $studentExtensionID = $enrollment->extension_id;
+        $studentAcademicLevelID = $enrollment->academic_level_id;
+        $semestre = ($lastEnrollment->semestre) +1;
+        $newEnrollment = StudentEnrollment::create([
+                'faculty_id' => $studentFacultID,
+                'course_id' => $studentCourseID,
+                'sewing_line_id' => $studentSewingLineID,
+                'extension_id' => $studentExtensionID,
+                'academic_level_id' => $studentAcademicLevelID,
+                'student_id'=>$studentId,
+
+                'semestre' => $semestre
+            ]);
+            // dd($newEnrollment);
+         return redirect()->route('home');
+
     }
 
     /**

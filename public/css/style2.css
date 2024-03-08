@@ -29,7 +29,7 @@
 
 .img-logo{
     width: 40px;
-    height: 40px; 
+    height: 40px;
     border-radius: 50%;
 }
 
@@ -132,7 +132,7 @@
     padding: 25px;
     box-shadow: 0px 0px 5px #cccccc;
     border-radius: 7px;
-  
+
 }
 
 .div-home section h1{
@@ -200,11 +200,11 @@
     display: flex;
     flex-direction: column;
     margin-bottom: 10px;
-   
+
 }
 
 .input-form{
-   
+
     height: 25px;
     border: 1px solid #3997bc;
     border-radius: 5px;
@@ -256,67 +256,77 @@ label{
 }
 
 .div-personal-info{
-    width: 100%; 
-    display: flex; 
-    flex-wrap: wrap; 
-    justify-content: space-between; 
-    border: 1px solid green; 
-    border-radius: 5px; 
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    border: 1px solid green;
+    border-radius: 5px;
     padding: 15px;
 }
 
 .div-address{
-    width: 48%; 
-    display: flex; 
-    margin-top: 30px; 
-    flex-wrap: wrap; 
-    justify-content: space-between; 
-    border: 1px solid green; 
-    border-radius: 5px; 
+    width: 48%;
+    display: flex;
+    margin-top: 30px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    border: 1px solid green;
+    border-radius: 5px;
     padding: 15px;
 }
 
 .div-address-legend{
-    position: absolute; 
-    background-color: green; 
-    color: #fff; 
-    padding: 3px 50px; 
-    top: 302px; 
+    position: absolute;
+    background-color: green;
+    color: #fff;
+    padding: 3px 50px;
+    top: 302px;
     font-size: 10pt;
 }
 
 .div-contact{
-    width: 49%; 
-    display: flex; 
-    margin-top: 30px; 
-    flex-wrap: wrap; 
-    justify-content: space-between; 
-    border: 1px solid green; 
-    border-radius: 5px; 
+    width: 49%;
+    display: flex;
+    margin-top: 30px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    border: 1px solid green;
+    border-radius: 5px;
     padding: 15px;
 }
 
 .div-contact-label{
-    position: absolute; 
-    background-color: green; 
-    color: #fff; 
-    padding: 3px 50px; 
-    top: 302px; 
+    position: absolute;
+    background-color: green;
+    color: #fff;
+    padding: 3px 50px;
+    top: 302px;
     font-size: 10pt;
 }
 
 .div-password-label{
-    position: absolute; 
-    background-color: red; 
-    color: #fff; 
-    padding: 3px 50px; 
+    position: absolute;
+    background-color: red;
+    color: #fff;
+    padding: 3px 50px;
     top: 503px;
     font-size: 10pt;
+}
+.novaInscricaoLink{
+    background-color: rgb(6, 184, 6);
+     color:#f4f4f4;
+      padding: 4px 6px;
+      border-radius: 5px;
+}
+.novaInscricaoLink:hover{
+    background-color:rgba(6, 184, 6, 0.274);
+    color: #008000;
 }
 
 /** For Mobile **/
 @media screen and (max-width: 570px){
-    
+
     /* Tela de Inicio do painel do inscrito */
     #header-painel-student{
         padding: 0 35px !important;
@@ -340,7 +350,7 @@ label{
     .menu-burger{
         display: block;
     }
-    
+
     .btn-menu-burger{
         width: 50px;
         padding: 3px;
@@ -453,12 +463,12 @@ label{
 
 /* Situacao Financeira */
 .btn-new-finance-student{
-    width: 100px; 
-    height: 30px; 
-    border: none; 
-    border-radius: 5px; 
-    background-color: rgba(14, 180, 14, 0.788); 
-    color: #ffffff; 
+    width: 100px;
+    height: 30px;
+    border: none;
+    border-radius: 5px;
+    background-color: rgba(14, 180, 14, 0.788);
+    color: #ffffff;
     cursor: pointer;
 }
 
@@ -488,9 +498,9 @@ span.required{
 }
 
 .div-propina{
-    display: flex; 
-    width: 100%; 
-    justify-content: space-between; 
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
     flex-wrap: wrap;
 }
 
@@ -532,7 +542,7 @@ span.required{
     list-style: none;
     border-radius: 0.25rem;
   }
-  
+
   .page-link {
     position: relative;
     display: block;
@@ -543,7 +553,7 @@ span.required{
     background-color: #fff;
     border: 1px solid #dee2e6;
   }
-  
+
   .page-link:hover {
     z-index: 2;
     color: #0056b3;
@@ -551,31 +561,31 @@ span.required{
     background-color: #e9ecef;
     border-color: #dee2e6;
   }
-  
+
   .page-link:focus {
     z-index: 3;
     outline: 0;
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
   }
-  
+
   .page-item:first-child .page-link {
     margin-left: 0;
     border-top-left-radius: 0.25rem;
     border-bottom-left-radius: 0.25rem;
   }
-  
+
   .page-item:last-child .page-link {
     border-top-right-radius: 0.25rem;
     border-bottom-right-radius: 0.25rem;
   }
-  
+
   .page-item.active .page-link {
     z-index: 3;
     color: #fff;
     background-color: #007bff;
     border-color: #007bff;
   }
-  
+
   .page-item.disabled .page-link {
     color: #6c757d;
     pointer-events: none;
@@ -583,34 +593,34 @@ span.required{
     background-color: #fff;
     border-color: #dee2e6;
   }
-  
+
   .pagination-lg .page-link {
     padding: 0.75rem 1.5rem;
     font-size: 1.25rem;
     line-height: 1.5;
   }
-  
+
   .pagination-lg .page-item:first-child .page-link {
     border-top-left-radius: 0.3rem;
     border-bottom-left-radius: 0.3rem;
   }
-  
+
   .pagination-lg .page-item:last-child .page-link {
     border-top-right-radius: 0.3rem;
     border-bottom-right-radius: 0.3rem;
   }
-  
+
   .pagination-sm .page-link {
     padding: 0.25rem 0.5rem;
     font-size: 0.875rem;
     line-height: 1.5;
   }
-  
+
   .pagination-sm .page-item:first-child .page-link {
     border-top-left-radius: 0.2rem;
     border-bottom-left-radius: 0.2rem;
   }
-  
+
   .pagination-sm .page-item:last-child .page-link {
     border-top-right-radius: 0.2rem;
     border-bottom-right-radius: 0.2rem;
