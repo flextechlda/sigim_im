@@ -94,4 +94,4 @@ Route::post('/manager/student/aprovated', [WebController::class, 'studentAprovat
 //Impressao de Recipo de comprovativo de pagamento
 Route::get('manager/student/receipt-payment/{number}', [PrintController::class, 'receiptPayment'])->middleware('auth:manager');
 
-Route::get('/printer/recipient-inscription/{code}', [PrintController::class, 'print']);
+Route::get('/printer/recipient-inscription/{code}/{id}', [PrintController::class, 'print']);

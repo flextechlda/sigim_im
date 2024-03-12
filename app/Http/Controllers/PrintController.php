@@ -328,9 +328,11 @@ class PrintController extends Controller
     }
 
     //A funcao que executa a impressao dos recibos
-    public function print($code){
+    public function print($code,$id){
         $student_data = Student::with(['studentEnrollment', 'manager'])->where('code', '=', $code)->first();
-        $enrollment = StudentEnrollment::with(['student','faculty'])->where('student_id','=',$student_data->id)->latest('semestre')->first();
+        $enrollment = StudentEnrollment::with(['student','faculty'])
+        ->where('student_id','=',$student_data->id)
+        ->where('id','=',$id)->first();
 
         if ($student_data) {
             $pdf = new Dompdf(["enable_remote" => true]);
@@ -498,7 +500,9 @@ class PrintController extends Controller
                                 <ul style="margin-left: 40px; padding: 5px;">
                                     <li>Faça o pagamento da matrícula e das taxas ($taxaMatricula Inscrição semestral por disciplina / módulo; Taxas de serviços semestrais $primeiraPropinaMensal), através de um depósito Bancário no  Millenium BIM, na conta numero: 475827778 - NIB 000100000047582777857 - Universidade Rovuma;</li><br>
                                     <li>Após o depósito, dirigir-se à Direcção do Registo Académico em Nampula ou aos Departamentos de Registo Académico nas Extensões com o talão de depósito, a ficha impressa de pré-inscrição, duas fotos tipo passe e os documentos originais anexados no processo de pré-inscrição.</li>
+
                                 </ul>
+                                 <p style="font-weight: 500;color:#ff0000; background-color:#ff000010;font-style: italic;font-size:10pt">Por questões organizacionais, pedimos que pague em recibos separados para cada categoria de taxa.</p>
                             </div>
                         </div>
                     </div>

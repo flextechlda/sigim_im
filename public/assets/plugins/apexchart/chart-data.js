@@ -7,39 +7,49 @@ if($('#school-area').length>0){var options={chart:{height:350,type:"area",toolba
 }
 
     if ($('#bar').length > 0) {
-var anos;
-studentsByYear.forEach(function(student) {
-    var ano = student.ano;
-    var genero = student.gender_id === 1 ? 'M' : 'F'; // assumindo que 1 é masculino e 2 é feminino
-    var total = student.total;
+    var anos;
+    var boysData = [];
+    var girlsData = [];
 
-    if (!data[ano]) {
-        data[ano] = { 'M': 0, 'F': 0, 'ano': ano };
+    studentsByYear.forEach(function(student) {
+        var ano = student.ano;
+        var genero = student.gender_id === 1 ? 'M' : 'F'; // assumindo que 1 é masculino e 2 é feminino
+        var total = student.total;
+
+        if (!data[ano]) {
+            data[ano] = { 'M': 0, 'F': 0, 'ano': ano };
+        }
+
+        data[ano][genero] += total;
+    });
+
+    anos = Object.values(data).map(item => item.ano);
+
+    Object.values(data).forEach(item => {
+        boysData.push(item.M);
+        girlsData.push(item.F);
+    });
+
+    var optionsBar = {
+        chart: {
+            type: 'bar', height: 350, width: '100%', stacked: false, toolbar: { show: false },
+        }, dataLabels: {
+            enabled: false
+        }, plotOptions: {
+            bar: { columnWidth: '55%', endingShape: 'rounded' },
+        }, stroke: {
+            show: true, width: 2, colors: ['transparent']
+        }, series: [{
+            name: "Boys", color: '#70C4CF', data: boysData,
+        }, { name: "Girls", color: '#3D5EE1', data: girlsData, }],
+        labels: anos, xaxis: {
+            labels: { show: false }, axisBorder: { show: false }, axisTicks: { show: false },
+        }, yaxis: { axisBorder: { show: false }, axisTicks: { show: false }, labels: { style: { colors: '#777' } } }, title: { text: '', align: 'left', style: { fontSize: '18px' } }
     }
 
-    data[ano][genero] += total;
-  anos = data.map((item) =>item.ano)
-
-})
-console.log(anos)
-        var optionsBar = {
-            chart: {
-                type: 'bar', height: 350, width: '100%', stacked: false, toolbar: { show: false },
-            }, dataLabels: {
-                enabled: false
-            }, plotOptions: {
-                bar: { columnWidth: '55%', endingShape: 'rounded' },
-            }, stroke: {
-                show: true, width: 2, colors: ['transparent']
-            }, series: [{
-                name: "Boys", color: '#70C4CF', data: [420, 532, 516, 575, 519, 517, 454, 392, 262, 383, 446, 551],
-            }, { name: "Girls", color: '#3D5EE1', data: [336, 612, 344, 647, 345, 563, 256, 344, 323, 300, 455, 456], }],
-            labels: anos, xaxis: {
-                labels: { show: false }, axisBorder: { show: false }, axisTicks: { show: false },
-            }, yaxis: { axisBorder: { show: false }, axisTicks: { show: false }, labels: { style: { colors: '#777' } } }, title: { text: '', align: 'left', style: { fontSize: '18px' } }
-        }
     var chartBar = new ApexCharts(document.querySelector('#bar'), optionsBar); chartBar.render();
 }
+
 
 if($('#s-line').length>0){var sline={chart:{height:350,type:'line',zoom:{enabled:false},toolbar:{show:false,}},dataLabels:{enabled:false},stroke:{curve:'straight'},series:[{name:"Desktops",data:[10,41,35,51,49,62,69,91,148]}],title:{text:'Product Trends by Month',align:'left'},grid:{row:{colors:['#f1f2f3','transparent'],opacity:0.5},},xaxis:{categories:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep'],}}
 var chart=new ApexCharts(document.querySelector("#s-line"),sline);chart.render();}});if($('#s-line-area').length>0){var sLineArea={chart:{height:350,type:'area',toolbar:{show:false,}},dataLabels:{enabled:false},stroke:{curve:'smooth'},series:[{name:'series1',data:[31,40,28,51,42,109,100]},{name:'series2',data:[11,32,45,32,34,52,41]}],xaxis:{type:'datetime',categories:["2018-09-19T00:00:00","2018-09-19T01:30:00","2018-09-19T02:30:00","2018-09-19T03:30:00","2018-09-19T04:30:00","2018-09-19T05:30:00","2018-09-19T06:30:00"],},tooltip:{x:{format:'dd/MM/yy HH:mm'},}}

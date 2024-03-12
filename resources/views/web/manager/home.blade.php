@@ -75,7 +75,7 @@
 									style="padding: 3.5px;" classs="btn-action-student btn-primary">
 									<i class="bi bi-eye"></i>
 								</a>
-								<a href="{{ url('/printer/recipient-inscription/' . $enrollment->student->code) }}"
+								<a href="{{ url('/printer/recipient-inscription/' . $enrollment->student->code).'/'.$enrollment->id }}"
 									style="padding: 3.5px;" classs="btn-action-student btn-secondary">
 									<i class="bi bi-printer"></i>
 								</a>

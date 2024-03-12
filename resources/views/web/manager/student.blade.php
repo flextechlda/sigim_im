@@ -51,9 +51,12 @@
 			<table class="table-registration">
 				<tr>
 					<th>Número de Recibo</th>
-					<th>Forma de Pagamento</th>
+					<th>Método</th>
 					<th>Montante</th>
-					<th>Estado de Pagamento</th>
+					<th>Mês</th>
+					<th>Semestre</th>
+					<th>Ano</th>
+					<th>Estado</th>
 					<th>Acção</th>
 				</tr>
 				@foreach ($student->movements as $movement)
@@ -66,6 +69,15 @@
 						</td>
 						<td>
 							{{ number_format($movement->total_amount, 2, '.', ',') }} MT
+						</td>
+						<td>
+							{{ $movement->month }}
+						</td>
+						<td>
+							{{ $movement->semestre }}º
+						</td>
+						<td>
+							{{ $movement->year }}
 						</td>
 						<td>
 							@if ($movement->status == '2')
@@ -123,7 +135,15 @@
 								{{-- @if ($service->code != 0006)
                                     <option value="{{ $service }}">{{ $service->description }}</option>
                                 @endif --}}
-								<option value="{{ $service }}">{{ $service->description }}</option>
+								@if ($lastEnrollment->semestre > 1)
+									@if (
+										$service->description != 'Taxa de Matrícula (Nacional)' &&
+											$service->description != 'Taxa de Matrícula (Estrangeiro)')
+										<option value="{{ $service }}">{{ $service->description }}</option>
+									@endif
+								@else
+									<option value="{{ $service }}">{{ $service->description }}</option>
+								@endif
 							@endforeach
 						</select>
 						<input type="number" min="1" class="input-form-new-movement"
@@ -186,8 +206,8 @@
 @section('javascript')
 	<script>
 		/*document.getElementById('form-search').addEventListener('submit', (form) => {
-													            document.getElementById('preloader').style.display = 'flex';
-													        });*/
+																						            document.getElementById('preloader').style.display = 'flex';
+																						        });*/
 
 
 

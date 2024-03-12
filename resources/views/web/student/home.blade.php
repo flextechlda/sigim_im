@@ -11,10 +11,10 @@
 			<h1>Minha Inscrição</h1>
 			{{-- {{ dd($lastEnrollmentPeriod->end) }} --}}
 			@if ($lastEnrollmentPeriod->end > date('Y-m-d'))
-				@if ($movements->count() < 5)
+				@if ($movements->count() > 5)
 					@if ($lastEnrollment->semestre === $lastEnrollmentPeriod->semestre)
 						<p
-							style="width: 50%; background-color: #1900ff2c; color: #1900ff; border-radius:5px; padding:4px 8px">
+							style="width: 50%; background-color: #1900ff2c; color: #1900ff; border-radius:5px; padding:4px 8px; font-size:12px;margin:0">
 							Olá <span style="color: #000; font-weight: bold"> Sr(a)
 								{{ $student->last_name }}</span>,você já está inscrito nesse semestre!</p>
 					@else
@@ -24,10 +24,10 @@
 					@endif
 				@else
 					<p
-						style="width: 50%; background-color: #ff88002c; color: #ff8800; border-radius:5px; padding:4px 8px">
+						style="width: 50%; background-color: #ff88002c; color: #ff8800; border-radius:5px; padding:4px 8px; font-size:12px;margin:0">
 						Olá <span style="color: #000; font-weight: bold"> Sr(a)
-							{{ $student->last_name }}</span>,
-						resguralize sua situacao financeira para poder
+							{{ $student->last_name }}</span>, resguralize sua situacao financeira referente
+						ao(s) semestre(s) passado(s) para poder
 						fazer inscricao deste semestre!</p>
 				@endif
 			@endif
@@ -65,7 +65,8 @@
 						@endif
 					</td>
 					<td>
-						<a href="{{ url('/printer/recipient-inscription/' . $enrollment->student->code) }}">
+						<a
+							href="{{ url('/printer/recipient-inscription/' . $enrollment->student->code . '/' . $enrollment->id) }}">
 							<i class="bi bi-printer"></i>
 						</a>
 					</td>
