@@ -40,7 +40,7 @@ Route::post('/user/student/registration', [WebController::class, 'createStudent'
 Route::get('user/home', [WebController::class, 'home'])->name('home')->middleware(['auth']);
 
 //adicao de nova inscrição
-Route::get('user/home/enrollment/add', [EnrollmentController::class, 'store'])->name('enrollment-store')->middleware(['auth']);
+Route::post('user/home/enrollment/add', [EnrollmentController::class, 'store'])->name('enrollment-store')->middleware(['auth']);
 
 Route::get('user/perfil', [WebController::class, 'perfil'])->name('perfil')->middleware(['auth']);
 

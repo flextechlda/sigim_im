@@ -51,6 +51,7 @@ class PrintController extends Controller
         $items = $movement->items;
 
         $student = $movement->student;
+        $enrollment = $student->studentEnrollment;
         $course = $student->studentEnrollment->course->label;
 
         $total = number_format($movement->total_amount, 2, '.', ',');
@@ -63,9 +64,12 @@ class PrintController extends Controller
         $date = date('Y-m-d H:i:s');
         $mes= obterNomeMes($movement->month);
         $str_items = '';
+
         $order = 0;
         foreach ($items as $item) {
     $amount = number_format($item->amount, 2, '.', ',');
+
+
 
     // Verifica se o item não é a taxa de matrícula
     if($movement->semestre>1){
@@ -355,8 +359,7 @@ class PrintController extends Controller
 
     //Funcoes para imprimir recibos de inscricao
     private function printerPending($enrollment){
-
-        if ($enrollment->enrollment_status == 1) {
+          if ($enrollment->enrollment_status == 1) {
             $status = "Pendente";
         }elseif ($enrollment->enrollment_status== 2) {
             $status = "Aprovada";
@@ -375,6 +378,64 @@ class PrintController extends Controller
         $course = $enrollment->course->label;
         $sewing = $enrollment->sewingLine->label;
         $student = $enrollment->student;
+        $str_itemsPre='';
+        if($enrollment->semestre>1){
+        $taxa = $enrollment->taxa =='1000'?"Taxa de inscrição por disciplina (Nacional)":"Taxa de inscrição por disciplina (Estrangeiro)";
+        $str_itemsPre = $str_itemsPre."
+        <div style='margin-top: 5px;'>
+                                <table style='width: 100%;'>
+                                <tr>
+                                    <th>Ordem</th>
+                                    <th>Referente a:</th>
+                                    <th>Montante (MT)</th>
+                                </tr>
+                                <tr>
+                                <td>1</td>
+                                <td>Taxas de serviços semestrais</td>
+                                <td>1750,00</td>
+
+                                </tr>
+                                <tr>
+                                <td>2</td>
+                                <td>$taxa</td>
+                                <td>$enrollment->taxa,00</td>
+
+                                </tr>
+
+                                </table>
+                                 <div style='margin-left: 446px;border: 1px solid; border-top:none; padding-left:20px; margin-bottom:20px;'>
+
+                                    <strong>Total</strong>
+                                    <strong>$enrollment->valor,00</strong>
+                                </div>
+                                <p><span style='font-weight: 500; '>Nota:</span> Para que a sua inscrição seja aprovada, siga os sequintes passos: </p>
+
+                                <ul style='margin-left: 40px; padding: 5px;'>
+                                    <li>Faça o pagamento das taxas através de um depósito Bancário no  Millenium BIM, na conta numero: 475827778 - NIB 000100000047582777857 - Universidade Rovuma;</li><br>
+                                    <li>Após o depósito, dirigir-se à Direcção do Registo Académico em Nampula ou aos Departamentos de Registo Académico nas Extensões com o talão de depósito e a ficha impressa de pré-inscrição.</li>
+
+                             </ul>
+
+                    <p style='font-weight: 500;color:#ff0000; background-color:#00000010;font-style: italic;font-size:10pt'>Por questões organizacionais, pedimos que pague em recibos separados para cada categoria de taxa.</p>
+             </div>
+        ";
+    }else{
+        $str_itemsPre = $str_itemsPre."
+
+        <div style='margin-top: 5px;'>
+            <p><span style='font-weight: 500;'>Nota:</span> Para que a sua inscrição seja aprovada, siga os sequintes passos: </p>
+
+            <ul style='margin-left: 40px; padding: 5px;'>
+                <li>Faça o pagamento das taxas ($taxaMatricula Inscrição semestral por disciplina / módulo; Taxas de serviços semestrais $primeiraPropinaMensal), através de um depósito Bancário no  Millenium BIM, na conta numero: 475827778 - NIB 000100000047582777857 - Universidade Rovuma;</li><br>
+                <li>Após o depósito, dirigir-se à Direcção do Registo Académico em Nampula ou aos Departamentos de Registo Académico nas Extensões com o talão de depósito e a ficha impressa de pré-inscrição.</li>
+
+            </ul>
+            <p style='font-weight: 500;color:#ff0000; background-color:#ff000020;font-style: italic;font-size:10pt;'>Por questões organizacionais, pedimos que pague em recibos separados para cada categoria de taxa.</p>
+        </div>
+        ";
+    }
+
+
 
         $str = <<<TEXT
             <!DOCTYPE html>
@@ -480,30 +541,8 @@ class PrintController extends Controller
                         </div>
 
                         <div style="width: 100%; margin-top: 15px;">
-                            <h4 style="font-weight: 700 !important; margin-bottom: 5px;">Informação do Curso</h4>
-                            <table style="width: 100%;">
-                                <tr>
-                                    <th>Faculdade</th>
-                                    <th>Curso</th>
-                                    <th>Linha de pesquisa</th>
-                                </tr>
-                                <tr>
-                                    <td>$faculty</td>
-                                    <td>$course</td>
-                                    <td>
-                                        $sewing
-                                    </td>
-                                </tr>
-                            </table>
-                            <div style="margin-top: 15px;">
-                                <p><span style="font-weight: 500;">Nota:</span> Para que a sua inscrição seja aprovada, siga os sequintes passos: </p>
-                                <ul style="margin-left: 40px; padding: 5px;">
-                                    <li>Faça o pagamento da matrícula e das taxas ($taxaMatricula Inscrição semestral por disciplina / módulo; Taxas de serviços semestrais $primeiraPropinaMensal), através de um depósito Bancário no  Millenium BIM, na conta numero: 475827778 - NIB 000100000047582777857 - Universidade Rovuma;</li><br>
-                                    <li>Após o depósito, dirigir-se à Direcção do Registo Académico em Nampula ou aos Departamentos de Registo Académico nas Extensões com o talão de depósito, a ficha impressa de pré-inscrição, duas fotos tipo passe e os documentos originais anexados no processo de pré-inscrição.</li>
-
-                                </ul>
-                                 <p style="font-weight: 500;color:#ff0000; background-color:#ff000010;font-style: italic;font-size:10pt">Por questões organizacionais, pedimos que pague em recibos separados para cada categoria de taxa.</p>
-                            </div>
+                            <h4 style="font-weight: 700 !important;">Detalhes da inscrição</h4>
+                            $str_itemsPre
                         </div>
                     </div>
                     <footer style="position: fixed; width: 100%; bottom: 25; left: 0; padding: 0 25px;">

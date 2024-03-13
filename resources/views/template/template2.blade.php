@@ -12,6 +12,7 @@
 		crossorigin="anonymous">
 	<link rel="stylesheet" href="{{ asset('css/style2.css') }}">
 	<link rel="shortcut icon" href="{{ asset('img/logo.png') }}">
+	@vite('resources/css/app.css')
 
 </head>
 
@@ -66,12 +67,12 @@
 
 	<script>
 		/*function showPreloader(){
-	            document.getElementById('preloader').style.display = 'flex';
-	        }
+		            document.getElementById('preloader').style.display = 'flex';
+		        }
 
-	        window.addEventListener('load', function(){
-	            document.getElementById('preloader').style.display = 'none';
-	        })*/
+		        window.addEventListener('load', function(){
+		            document.getElementById('preloader').style.display = 'none';
+		        })*/
 	</script>
 </body>
 

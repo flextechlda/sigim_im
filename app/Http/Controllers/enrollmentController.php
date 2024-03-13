@@ -33,7 +33,7 @@ class EnrollmentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // dd($request);
         $student = Student::where('user_id', '=', auth()->user()->id)->first();
         $studentId=$student->id;
 
@@ -46,6 +46,11 @@ class EnrollmentController extends Controller
         $studentExtensionID = $enrollment->extension_id;
         $studentAcademicLevelID = $enrollment->academic_level_id;
         $semestre = ($lastEnrollment->semestre) +1;
+        $numeroDisciplinas=$request->number;
+        $taxa = $request->taxa;
+        $servicosSemestrais = 1750;
+        $valor = $servicosSemestrais + ($taxa*$numeroDisciplinas);
+        // dd($valor);
         $newEnrollment = StudentEnrollment::create([
                 'faculty_id' => $studentFacultID,
                 'course_id' => $studentCourseID,
@@ -53,8 +58,10 @@ class EnrollmentController extends Controller
                 'extension_id' => $studentExtensionID,
                 'academic_level_id' => $studentAcademicLevelID,
                 'student_id'=>$studentId,
-
-                'semestre' => $semestre
+                'semestre' => $semestre,
+                'numero_disciplinas' => $numeroDisciplinas,
+                'valor' => $valor,
+                'taxa' => $taxa
             ]);
             // dd($newEnrollment);
          return redirect()->route('home');

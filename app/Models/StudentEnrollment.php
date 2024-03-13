@@ -17,6 +17,9 @@ class StudentEnrollment extends Model
         'student_id',
         'semestre',
         'enrollment_status',
+        'numero_disciplinas',
+        'taxa',
+        'valor'
     ];
 
     public function student()
