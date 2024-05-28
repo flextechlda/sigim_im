@@ -379,8 +379,9 @@ class PrintController extends Controller
         $sewing = $enrollment->sewingLine->label;
         $student = $enrollment->student;
         $str_itemsPre='';
+        $taxaPorDisciplinas = ($enrollment->taxa) * ($enrollment->numero_disciplinas);
         if($enrollment->semestre>1){
-        $taxa = $enrollment->taxa =='1000'?"Taxa de inscrição por disciplina (Nacional)":"Taxa de inscrição por disciplina (Estrangeiro)";
+        $taxaLabel = "Taxa de inscrição por disciplina ( $enrollment->numero_disciplinas x $enrollment->taxa,00)";
         $str_itemsPre = $str_itemsPre."
         <div style='margin-top: 5px;'>
                                 <table style='width: 100%;'>
@@ -397,26 +398,24 @@ class PrintController extends Controller
                                 </tr>
                                 <tr>
                                 <td>2</td>
-                                <td>$taxa</td>
-                                <td>$enrollment->taxa,00</td>
+                                <td>$taxaLabel</td>
+                                <td>$taxaPorDisciplinas,00</td>
 
                                 </tr>
 
                                 </table>
-                                 <div style='margin-left: 446px;border: 1px solid; border-top:none; padding-left:20px; margin-bottom:20px;'>
+                                 <div style='margin-left: 453px;border: 1px solid; border-top:none; align-items:center; text-align: center; margin-bottom:20px;'>
 
                                     <strong>Total</strong>
                                     <strong>$enrollment->valor,00</strong>
                                 </div>
-                                <p><span style='font-weight: 500; '>Nota:</span> Para que a sua inscrição seja aprovada, siga os sequintes passos: </p>
+                                <p><span style='font-weight: 500; '>Nota:</span> Para que a sua pré-inscrição seja aprovada, siga os seguintes passos: </p>
 
                                 <ul style='margin-left: 40px; padding: 5px;'>
                                     <li>Faça o pagamento das taxas através de um depósito Bancário no  Millenium BIM, na conta numero: 475827778 - NIB 000100000047582777857 - Universidade Rovuma;</li><br>
-                                    <li>Após o depósito, dirigir-se à Direcção do Registo Académico em Nampula ou aos Departamentos de Registo Académico nas Extensões com o talão de depósito e a ficha impressa de pré-inscrição.</li>
+                                    <li>Após o depósito, dirigir-se à Direcção do Registo Académico em Nampula ou aos Departamentos de Registo Académico dos Institutos(Lichinga e Montepuez) com o talão de depósito e a ficha impressa de pré-inscrição.</li>
 
                              </ul>
-
-                    <p style='font-weight: 500;color:#ff0000; background-color:#00000010;font-style: italic;font-size:10pt'>Por questões organizacionais, pedimos que pague em recibos separados para cada categoria de taxa.</p>
              </div>
         ";
     }else{
@@ -427,11 +426,10 @@ class PrintController extends Controller
 
             <ul style='margin-left: 40px; padding: 5px;'>
                 <li>Faça o pagamento das taxas ($taxaMatricula Inscrição semestral por disciplina / módulo; Taxas de serviços semestrais $primeiraPropinaMensal), através de um depósito Bancário no  Millenium BIM, na conta numero: 475827778 - NIB 000100000047582777857 - Universidade Rovuma;</li><br>
-                <li>Após o depósito, dirigir-se à Direcção do Registo Académico em Nampula ou aos Departamentos de Registo Académico nas Extensões com o talão de depósito e a ficha impressa de pré-inscrição.</li>
+                <li>Após o depósito, dirigir-se à Direcção do Registo Académico em Nampula ou aos Departamentos de Registo Académico dos Institutos(Lichinga e Montepuez) com o talão de depósito e a ficha impressa de pré-inscrição.</li>
 
             </ul>
-            <p style='font-weight: 500;color:#ff0000; background-color:#ff000020;font-style: italic;font-size:10pt;'>Por questões organizacionais, pedimos que pague em recibos separados para cada categoria de taxa.</p>
-        </div>
+          </div>
         ";
     }
 
@@ -508,18 +506,19 @@ class PrintController extends Controller
                         <img src="https://sigim.co.mz/img/logo.jpg" style="width: 70px;">
                         <h1>Universidade Rovuma</h1>
                         <h2>Direcção do Registo Académico</h2>
+                        <h1 style="text-decoration:underline;text-transform:uppercase">Ficha de Pré-inscrição Semestral</h2>
                     </div>
                     <div class="recepient-body">
                         <div style="width: 100%; margin-top: 10px;">
                             <h4 style="font-weight: 700 !important; margin-bottom: 5px;">Informação Pessoal
-                            <span style="margin-left:300px; font-size:12px ;font-weight: 700 !important"> Pre-inscrição para o <span style="font-size:12px;font-weight: 700 !important">$enrollment->semestre</span>º semestre</span>
+                            <span style="margin-left:300px; font-size:12px ;font-weight: 700 !important"> Pré-inscrição para o <span style="font-size:12px;font-weight: 700 !important">$enrollment->semestre</span>º semestre</span>
                             </h4>
                             <table style="width: 100%;">
                                 <tr>
-                                    <th>Numero de inscrição</th>
+                                    <th>Numero </th>
                                     <th>Código do estudante</th>
                                     <th>Nome do estudante</th>
-                                    <th>Data de inscrição</th>
+                                    <th>Data</th>
                                     <th>Estado</th>
                                 </tr>
                                 <tr>
@@ -541,7 +540,7 @@ class PrintController extends Controller
                         </div>
 
                         <div style="width: 100%; margin-top: 15px;">
-                            <h4 style="font-weight: 700 !important;">Detalhes da inscrição</h4>
+                            <h4 style="font-weight: 700 !important;">Detalhes da Pré-inscrição</h4>
                             $str_itemsPre
                         </div>
                     </div>
@@ -559,18 +558,58 @@ class PrintController extends Controller
 
         if ($enrollment->enrollment_status == 1) {
             $status = "Pendente";
-        }elseif ($enrollment->enrollment_status == 2) {
+        }elseif ($enrollment->enrollment_status== 2) {
             $status = "Aprovada";
-        }elseif($enrollment->enrollment_status == 0){
+        }elseif($enrollment->enrollment_status== 0){
             $status = "Cancelada";
+        }
+        $taxaMatricula = "Taxa de matrícula;";
+        $primeiraPropinaMensal = "e a primeira propina mensal";
+        if($enrollment->semestre >1){
+            $taxaMatricula = "";
+            $primeiraPropinaMensal="";
         }
 
         $data = date('d-m-Y H:i:s');
+        $manager = $enrollment->student->manager;
         $faculty = $enrollment->faculty->label;
         $course = $enrollment->course->label;
         $sewing = $enrollment->sewingLine->label;
-        $manager = $enrollment->student->manager;
         $student = $enrollment->student;
+        $str_itemsPre='';
+        $taxaPorDisciplinas = ($enrollment->taxa) * ($enrollment->numero_disciplinas);
+        $taxaLabel = "Taxa de inscrição por disciplina ( $enrollment->numero_disciplinas x $enrollment->taxa,00)";
+        $str_itemsPre = $str_itemsPre."
+        <div style='margin-top: 5px;'>
+                                <table style='width: 100%;'>
+                                <tr>
+                                    <th>Ordem</th>
+                                    <th>Referente a:</th>
+                                    <th>Montante (MT)</th>
+                                </tr>
+                                <tr>
+                                <td>1</td>
+                                <td>Taxas de serviços semestrais</td>
+                                <td>1750,00</td>
+
+                                </tr>
+                                <tr>
+                                <td>2</td>
+                                <td>$taxaLabel</td>
+                                <td>$taxaPorDisciplinas,00</td>
+
+                                </tr>
+
+                                </table>
+                                 <div style='margin-left: 453px;border: 1px solid; border-top:none; align-items:center; text-align: center; margin-bottom:20px;'>
+
+                                    <strong>Total</strong>
+                                    <strong>$enrollment->valor,00</strong>
+                                </div>
+
+             </div>
+        ";
+
 
         $str = <<<TEXT
             <!DOCTYPE html>
@@ -643,6 +682,7 @@ class PrintController extends Controller
                         <img src="https://sigim.co.mz/img/logo.jpg" style="width: 70px;">
                         <h1>Universidade Rovuma</h1>
                         <h2>Direcção do Registo Académico</h2>
+                        <h1 style="text-decoration:underline;text-transform:uppercase">Ficha de Inscrição Semestral</h2>
                     </div>
                     <div class="recepient-body">
                         <div style="width: 100%; margin-top: 10px;">
@@ -676,21 +716,8 @@ class PrintController extends Controller
                         </div>
 
                         <div style="width: 100%; margin-top: 15px;">
-                            <h4 style="font-weight: 700 !important; margin-bottom: 5px;">Informação do Curso</h4>
-                            <table style="width: 100%;">
-                                <tr>
-                                    <th>Faculdade</th>
-                                    <th>Curso</th>
-                                    <th>Linha de pesquisa</th>
-                                </tr>
-                                <tr>
-                                    <td>$faculty</td>
-                                    <td>$course</td>
-                                    <td>
-                                        $sewing
-                                    </td>
-                                </tr>
-                            </table>
+                            <h4 style="font-weight: 700 !important; margin-bottom: 5px;">Detalhes da Inscrição</h4>
+                            $str_itemsPre
                             <div style="margin-top: 15px;">
                                 <h4 style="font-size: 7pt;">Inscrição aprovada por: $manager->first_name $manager->last_name</h4>
                             </div>

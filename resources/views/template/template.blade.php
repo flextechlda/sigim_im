@@ -7,6 +7,7 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>Universidade Rovuma | Registo Acadêmico</title>
 	<link rel="stylesheet" href="{{ asset('css/style.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/tailwind.css') }}">
 	<link rel="shortcut icon" href="{{ asset('img/logo.png') }}">
 
 </head>
