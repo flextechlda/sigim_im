@@ -391,11 +391,6 @@ class PrintController extends Controller
                                     <th>Montante (MT)</th>
                                 </tr>
                                 <tr>
-                                <td>1</td>
-                                <td>Taxas de serviços semestrais</td>
-                                <td>1750,00</td>
-
-                                </tr>
                                 <tr>
                                 <td>2</td>
                                 <td>$taxaLabel</td>

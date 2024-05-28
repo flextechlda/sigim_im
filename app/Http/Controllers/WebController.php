@@ -381,7 +381,7 @@ class WebController extends Controller
             $check_password =  Hash::check($request->password, auth()->user()->password);
 
             if ($check_password):
-                $user = $user->find(auth()->user()->id);    
+                $user = $user->find(auth()->user()->id);
                 try{
                     $user->update([
                         'password' => Hash::make($request->new_password)
@@ -435,7 +435,9 @@ class WebController extends Controller
     public function homeManager($student_code = null)
     {
         if (isset($_GET['student_code']) && !empty($_GET['student_code'])) {
-            $students = Student::with('studentEnrollment')->where('code', '=', $_GET['student_code'])->where('extension_id', '=', auth()->user()->extension_id)->paginate();
+            $student = Student::where('code','=',$_GET['student_code'])->where('extension_id', '=', auth()->user()->extension_id)->first();
+          
+             $studentEnrollment = StudentEnrollment::with(['student'])->where('student_id','=',$student->id)->latest()->paginate(10);
             // dd($students);
         }else{
             $studentEnrollment = StudentEnrollment::with(['student'])->where('extension_id', '=', auth()->user()->extension_id)->latest()->paginate(10);

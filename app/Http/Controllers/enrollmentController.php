@@ -48,8 +48,7 @@ class EnrollmentController extends Controller
         $semestre = ($lastEnrollment->semestre) +1;
         $numeroDisciplinas=$request->number;
         $taxa = $request->taxa;
-        $servicosSemestrais = 1750;
-        $valor = $servicosSemestrais + ($taxa*$numeroDisciplinas);
+        $valor =($taxa*$numeroDisciplinas);
         // dd($valor);
         $newEnrollment = StudentEnrollment::create([
                 'faculty_id' => $studentFacultID,

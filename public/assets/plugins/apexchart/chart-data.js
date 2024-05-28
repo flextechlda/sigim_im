@@ -82,20 +82,4 @@ if($('#radial-chart').length>0){var radialChart={chart:{height:350,type:'radialB
  var dataContainer = document.getElementById('bar');
         var studentsByYear = JSON.parse(dataContainer.getAttribute('estudantes'));
 var data = [];
-// var anos;
-// studentsByYear.forEach(function(student) {
-//     var ano = student.ano;
-//     var genero = student.gender_id === 1 ? 'M' : 'F'; // assumindo que 1 é masculino e 2 é feminino
-//     var total = student.total;
-
-//     if (!data[ano]) {
-//         data[ano] = { 'M': 0, 'F': 0, 'ano': ano };
-//     }
-
-//     data[ano][genero] += total;
-//   anos = data.map((item) =>item.ano)
-
-// })
-// console.log(anos)
-
 
